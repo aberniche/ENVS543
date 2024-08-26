@@ -1,3 +1,3 @@
 # ENVS543
 For ENVS 543 at VCU
-Data here is inb relation to the course materials. 
+Data here is in relation to the course materials. 
