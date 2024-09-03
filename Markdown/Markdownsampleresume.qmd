@@ -1,0 +1,15 @@
+---
+title: "Ashley Berniche Resume"
+author: "Ashley Berniche"
+date: "9/3/2024"
+format: html
+editor: visual
+---
+
+Masters student at Virginia Commonwealth University passionate about environmental education, effective science communication, and increasing access and equity in STEM.
+
+## Work Experience
+
+**Education Program Coordinator, *American Fisheries Society***
+
+-   Program coordinator for the Hutton Junior Fisheries Biology Program
