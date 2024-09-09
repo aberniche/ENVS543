@@ -1,0 +1,47 @@
+---
+title: "My Interests"
+author: "Ashley Berniche"
+format: revealjs
+editor: visual
+---
+
+## Life of a Generalist
+
+My interest in environmental studies has always been broad, and my experience in the field reflects that
+
+My old professor used to say that nobody wants to be a generalist anymore, they all want to be specialists.
+
+-   Not me!
+
+## Non-Native, Invasive Species
+
+-   My first specific interest
+-   I started off interested in invasive reptiles (tegus, iguanas, very Florida)
+-   Did research on invasive snails, looking for rat lungworm, *Angiostrongylus cantonensis*
+-   Did my senior thesis on non-native, invasive plant species in pine flatwoods
+
+## Plants
+
+-   My thesis about plants in pine flatwoods sparked my interest in plants
+
+-   Used this skill to get a job doing wetland delineations and mitigation
+
+-   I HATE Caesar weed
+
+![Caesar weed](https://treasurecoastnatives.wordpress.com/wp-content/uploads/2014/09/urena-lobata-close.jpg){fig-align="right" width="500"}
+
+## Stream and Wetland Ecology
+
+-   My work with plants led to projects with wetlands and streams
+-   I became interested in stream health and ecology
+
+## Education
+
+-   I've always had an interest in education
+-   Have been a camp counselor, environmental educator, and TA in undergrad and grad school
+-   Now I get to work with students through the [Hutton Program](www.hutton.fisheries.org)
+
+## Environmental Justice
+
+-   Through my current job at AFS, I am the coordinator of our DEIJA work
+-   I've always been interested in environmental justice, but my work at AFS has amplified the importance of this work to me
