@@ -141,7 +141,7 @@ Do the same as the previous question for the approriate OR operator.
 In the example above for the square root, the variable `root2` has the square root of the number $2$.  Test the equality (e.g., use the `==` operator) of this varible times itself to the value $2$. Discuss this with your neighbor.  Does this make sense?
 
 ```{r}
-sqrt2 == 
+
 
 ```
 
