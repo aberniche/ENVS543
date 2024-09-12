@@ -23,8 +23,64 @@ url <- "https://raw.githubusercontent.com/DyerlabTeaching/Data-Containers/main/d
 
 ## Vectors
 
+```{r}
+
+data <- c(23, 60, 80, 98, 17, 57)
+
+data
+
+sum(data)
+
+sqrt(data)
+
+other <- 1:6
+other
+
+data-other
+
+tempValues <- as.character(data)
+tempValues
+```
+
+
 ## Matrices
+
+```{r}
+
+
+```
+
 
 ## Lists
 
+```{r}
+
+summary(iris)
+class(iris)
+
+fit <- cor.test( iris$Petal.Length, iris$Petal.Width)
+fit
+
+names(fit)
+
+```
+
+data inside the doc (P = `r fit$p.value `)
+
 ## Data Frames
+
+```{r}
+library(tidyverse)
+
+beetles <- read_csv( url )
+
+summary ( beetles )
+
+sites <- beetles$Stratum
+summary( sites )
+sites
+```
+```{r}
+library( leaflet )
+```
+
