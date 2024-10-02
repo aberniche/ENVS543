@@ -1,0 +1,71 @@
+---
+title: "Maryland Biological Stream Survey Sampling"
+author: "Ashley Berniche"
+format: html
+editor: visual
+---
+
+## Abstract
+
+This document summarizes the results of the Maryland Biological Stream Survey Sampling data collected between 1995-2016.
+
+## Introduction
+
+This data was collected from a data package provided in ENVS521. The data was collected at various monitoring sites in Maryland by the Maryland Department of Natural Resources. Data collected includes BIBI "(Benthic Index of Biotic Integrity)" metrics and FIBI "(Fish Index of Biotic Integrity)"metrics to analyze stream health.For these metrics, 1 represents very poor biological diversity and 5 represents excellent biological diversity.High biodiversity is an indicator of a healthy ecosystem and can be indicators for water quality. 
+
+```{r}
+dataset <- read.csv("C:\\Users\\abern\\OneDrive\\Documents\\ENVS543\\MBSS.csv")
+
+library(dplyr)  
+library(tidyverse)  
+```
+
+## Methods
+
+Using the original data set, columns were isolated that contained relevant ID information, year, BIBI, FIBI, and average scores. Rows were removed that displayed NA in either their BIBI or FIBI scores. This data was then summarized. 
+
+```{r}
+bifi <- dataset[ c(2,3,8,9,10)]
+
+#remove lat/long and other data
+
+
+```
+
+```{r}
+
+bifi <- dataset[ c(2,3,8,9,10)]
+
+#remove lat/long and other data
+bificlean <- bifi %>%
+     drop_na(3,4) 
+
+
+```
+
+## Results
+
+```{r Results}
+
+
+bc <- bificlean %>%
+  select(3, 4, 5)
+
+
+bc <- bc %>%
+  rename(
+    "BIBI Score" = bibi_05,  # Ensure bibi_05 exists in bc
+    "FIBI Score" = FIBI_05,   # Ensure FIBI_05 exists in bc
+    "Average Score" = SCORE    # Ensure SCORE exists in bc
+  )
+
+sumbc <- summary(bc)
+
+print(sumbc)  # Use print to ensure it displays in the document
+
+```
+The average BIBI score is 3.194, indicating Good/Fair biological conditions are present across the sample set. The average FIBI score is 3.255, indicating Good/Fair biological conditions for fish populations. The mean and median for all three categories are similar, with the FIBI score having the largest deviation between the mean and median. 
+
+
+
+
