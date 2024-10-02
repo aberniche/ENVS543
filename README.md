@@ -10,3 +10,6 @@ Edit here.
 
 - [ENVS Interests](https://aberniche.github.io/ENVS543/Markdown/Envsinterests.html)
 
+
+## Other Stuff
+-[Evil data homework](https://aberniche.github.io/ENVS543/Tabulardatahomework.html)
