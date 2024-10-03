@@ -1,29 +1,27 @@
-
 # Ashley Berniche Rice Rivers Dataset
-  
-library( tidyverse )
-library( lubridate )
 
-url <- "https://docs.google.com/spreadsheets/d/1Mk1YGH9LqjF7drJE-td1G_JkdADOU0eMlrP01WFBT8s/pub?gid=0&single=true&output=csv"
-  
-rice <- read.csv( url ) 
-  
-# make date objects
+library(tidyverse)
+library(lubridate)
 
-rice$DateTime <- as.character(rice$DateTime)
+getricedata <- function() {
   
-# make month & weekday objects
-# convert f > c
+  url <- "https://docs.google.com/spreadsheets/d/1Mk1YGH9LqjF7drJE-td1G_JkdADOU0eMlrP01WFBT8s/pub?gid=0&single=true&output=csv"
 
+rice <- read.csv(url)
+
+# Convert DateTime to character (if necessary) and make it a proper date-time object
+rice$DateTime <- as_datetime(rice$DateTime)  # Assuming DateTime is in a compatible format
+
+# Create Month, Day, and Weekday columns, and convert Fahrenheit to Celsius
 rice <- rice %>%
-    mutate( 
-      Month == factor(month (DateTime, label == T, abbreviate == T) ), levels == month.abb
-      Day == day(DateTime)
-      Weekday == factor(wday(DateTime, label == T, abbreviate == T), levels == wday(1:7, label == T, abbreviate == T
-      AirtempC == (AirTempF -32 / 1.8 )  )
+  mutate(
+    Month = factor(month(DateTime, label = TRUE, abbreviate = TRUE)),
+    Day = day(DateTime),
+    Weekday = factor(wday(DateTime, label = TRUE, abbreviate = TRUE), levels = wday(1:7, label = TRUE, abbreviate = TRUE)),
+    AirTempC = (AirtempF - 32) / 1.8  # Correct the temperature conversion formula
+  )
 
-# get rid of extra data
-
+# Select only relevant columns (don't forget to add commas between column names and close parentheses)
 riceclean <- rice %>%
   select(
     DateTime,
@@ -50,20 +48,9 @@ riceclean <- rice %>%
     ODO_mgl,
     Depth_m,
     SurfaceWaterElev_m_levelNad83m
-    
-    
+  )
 
-# return rice
-return(rice)
+# View the cleaned data
+view(riceclean)
 
-
-
-
-# reorder the columns
-
-
-
-
-
-
-
+}
