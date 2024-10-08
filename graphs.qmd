@@ -1,0 +1,44 @@
+---
+title: "Rice Rivers Graphs"
+author: Ashley Berniche
+format: html
+editor: source
+---
+
+
+
+```{r}
+source("getricedata.R")
+data <- getricedata()
+```
+
+Total Rain for each Weekday in January
+
+```{r}
+df <- data |>
+  filter(Month == "Jan") |>  
+  group_by(Weekday) |> 
+  summarise(Rain_in = sum(Rain_in))
+
+df |>
+  ggplot( aes(Weekday, Rain_in)) +
+  geom_col()
+
+barplot( df$Rain_in, names.arg = df$Weekday, ylab = "Rain")
+
+
+```
+
+
+```{r}
+
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+
+
+
+```
+
