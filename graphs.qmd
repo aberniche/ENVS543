@@ -5,11 +5,13 @@ format: html
 editor: visual
 ---
 
-##Abstract
+## Abstract
 
 The following graphs were created using data from the Rice Rivers Center at Virginia Commonwealth University. The graphs depict random data specifications that have no relation to each other. They are correct, scientifically.
 
-```{r}
+```{r echo=FALSE}
+
+
 library(tidyverse)
 library(ggplot2)
 source("getricedata.R")
@@ -34,32 +36,17 @@ barplot( df$Rain_in,
 
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
 ```{r}
 
 df |> 
   ggplot(aes(x = Weekday, y = Rain_in)) +
-  geom_bar(stat = "identity", fill = "skyblue") 
-
-#+ 
-#  labs(title = "Total Rain in January by Day of the Week", 
-#       x = "Day of the Week", 
-#       y = "Rain (inches)") +
-#  theme_minimal() 
+  geom_bar(stat = "identity", fill = "skyblue") + 
+  labs(title = "Total Rain in January by Day of the Week", 
+       x = "Day of the Week", 
+       y = "Rain (inches)") +
+      theme_minimal() 
 
 ```
-
 
 Average daily temperature for weekdays in February
 
@@ -116,43 +103,93 @@ Daily Total Rain and Daily Median Temperature
 
 ```{r}
 
+
 rain <- data |>
   group_by(Month, Day, Weekday) |>
-  summarise( totalrain = sum( Rain_in), mediantemp = median(AirTempC) )
+  summarise(totalrain = sum(Rain_in), mediantemp = median(AirTempC))
+
 
 centroids <- rain |>
   group_by(Month) |>
-  summarise( mrain = mean(totalrain), mtemp = mean(mediantemp))
+  summarise(mrain = mean(totalrain), mtemp = mean(mediantemp))
 
-ggplot(rain, aes( totalrain, y = mediantemp, color = Month)) +
-  geom_point() +
-  geom_text(data = centroids, aes (x= mrain, y=mtemp, label = Month), color = "black", fontface = "bold") +
-  labs(title = "Daily Total Rain vs. Median Temperature", 
-       x = "Daily Total Rain (mm)", 
-       y = "Daily Median Temperature (°C)") 
+ggplot(rain, aes(totalrain, y = mediantemp)) +
+  geom_point(aes(color = Month)) +
+  geom_point(data = centroids, aes(x = mrain, y = mtemp), color = "red", size = 2) +  
+  geom_text(data = centroids, aes(x = mrain, y = mtemp, label = Month), color = "black", fontface = "bold", vjust = -1) +  
+  facet_wrap(~ Month) +  
+  labs(title = "Daily Total Rain vs. Median Temperature by Month",
+       x = "Daily Total Rain (mm)",
+       y = "Daily Median Temperature (°C)") +
+  theme_minimal()  
 
-
-    
 
  
-  
+```
+
+```{r}
+plot(rain$totalrain, rain$mediantemp, 
+     col = as.factor(rain$Month),    
+     pch = 16,                       # Point character
+     main = "Daily Total Rain vs. Median Temperature", 
+     xlab = "Daily Total Rain (mm)", 
+     ylab = "Daily Median Temperature (°C)")
+
+points(centroids$mrain, centroids$mtemp, 
+       pch = 19, col = "red", cex = 2)  
+
+
+legend("topright", legend = unique(rain$Month), 
+       col = 1:length(unique(rain$Month)), 
+       pch = 16, title = "Month", cex = 0.8)
+
+
+
 ```
 
 Wind Direction January 5-11th
 
 ```{r}
 
-wind <- data |>
-  filter( Month == "Jan") |>
-  filter( Day == 5:11) |>
-  group_by( Day )
-  
+wind <- data %>%
+  filter(Month == "Jan") %>%
+  filter(Day %in% 5:11) %>%
+  group_by(Day, WindDir) %>%
+  summarise(count = n(), .groups = "drop") 
 
-ggplot(wind, aes(x = Day, y = WindDir)) + geom_point()
+
+ggplot(wind, aes(x = WindDir, y = count, fill = factor(Day))) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.7, color = "black", size = 0.2) +  
+  coord_polar(theta = "x") +  
+  labs(title = "Wind Direction Frequency (January 5-11)",
+       x = "Wind Direction (degrees)",
+       y = "Frequency",
+       fill = "Day") +
+  theme_minimal() +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),  
+        panel.grid = element_line(color = "grey80"), 
+        legend.position = "right") + 
+  scale_fill_brewer(palette = "Set1")
 
 ```
 
 ```{r}
+
+wind <- data[data$Month == "Jan" & data$Day %in% 5:11, ]
+
+
+wind$WindDir <- as.numeric(as.character(wind$WindDir))
+
+
+plot(wind$Day, wind$WindDir,
+     main = "Wind Direction (January 5-11)",
+     xlab = "Day of January",
+     ylab = "Wind Direction (Degrees)",
+     pch = 16,          # Point character type
+     col = "blue",      # Point color
+     ylim = c(0, 360))  # Set y-axis limits from 0 to 360 degrees
+
+
 
 
 ```
