@@ -193,3 +193,5 @@ plot(wind$Day, wind$WindDir,
 
 
 ```
+
+I decided to show my work because it is impressive. Did I make the best graphs? No. Did I try really hard? Yes.
