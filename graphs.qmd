@@ -2,43 +2,157 @@
 title: "Rice Rivers Graphs"
 author: Ashley Berniche
 format: html
-editor: source
+editor: visual
 ---
 
+##Abstract
 
+The following graphs were created using data from the Rice Rivers Center at Virginia Commonwealth University. The graphs depict random data specifications that have no relation to each other. They are correct, scientifically.
 
 ```{r}
+library(tidyverse)
+library(ggplot2)
 source("getricedata.R")
 data <- getricedata()
+
 ```
 
 Total Rain for each Weekday in January
 
 ```{r}
+
 df <- data |>
   filter(Month == "Jan") |>  
   group_by(Weekday) |> 
   summarise(Rain_in = sum(Rain_in))
 
-df |>
-  ggplot( aes(Weekday, Rain_in)) +
-  geom_col()
 
-barplot( df$Rain_in, names.arg = df$Weekday, ylab = "Rain")
 
+barplot( df$Rain_in, 
+         names.arg = df$Weekday, 
+         ylab = "Rain (inches)", xlab = "Day of the Week", main = "Average Total Rain in January") 
 
 ```
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```{r}
 
+df |> 
+  ggplot(aes(x = Weekday, y = Rain_in)) +
+  geom_bar(stat = "identity", fill = "skyblue") 
+
+#+ 
+#  labs(title = "Total Rain in January by Day of the Week", 
+#       x = "Day of the Week", 
+#       y = "Rain (inches)") +
+#  theme_minimal() 
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+
+Average daily temperature for weekdays in February
+
+```{r}
+
+temp <- data |>
+  filter(Month == "Feb") |>
+  group_by( Day ) |>
+  summarise( meantemp = mean( AirTempC) )
+
+
+ggplot( temp, aes( x = Day, y = meantemp ) ) + geom_point() +
+  geom_smooth(se = FALSE, color = "red") +
+   labs(title = "Mean Air Temperature in February", 
+       x = "Day", 
+       y = "Mean Temperature (°C)") 
+  
+plot(temp$Day, temp$meantemp, 
+     main = "Mean Air Temperature in February", 
+     xlab = "Day", 
+     ylab = "Mean Temperature (°C)",
+     pch = 16,           
+     col = "black",      
+     type = "p")   +      
+lines(loess.smooth(temp$Day, temp$meantemp), col = "red", lwd = 2)
+    
+```
+
+Water Depth on Valentine's Day
+
+```{r}
+
+val <- data |>
+  filter( Month == "Feb", Day == 14) 
+
+ggplot( val, aes( y = Depth_m, x = Date) ) + geom_point() +
+  labs(title = "Water Depth on Valentine's Day", 
+       x = "Time of Day", 
+       y = "Depth in Meters)") 
+  
+plot(val$Date, val$Depth_m,
+     main = "Water Depth on Valentine's Day",  
+     xlab = "Time of Day",                      
+     ylab = "Depth in Meters",                
+     pch = 16,                                
+     col = "blue",                            
+     type = "p")         
+
+  
+  
+```
+
+Daily Total Rain and Daily Median Temperature
+
+```{r}
+
+rain <- data |>
+  group_by(Month, Day, Weekday) |>
+  summarise( totalrain = sum( Rain_in), mediantemp = median(AirTempC) )
+
+centroids <- rain |>
+  group_by(Month) |>
+  summarise( mrain = mean(totalrain), mtemp = mean(mediantemp))
+
+ggplot(rain, aes( totalrain, y = mediantemp, color = Month)) +
+  geom_point() +
+  geom_text(data = centroids, aes (x= mrain, y=mtemp, label = Month), color = "black", fontface = "bold") +
+  labs(title = "Daily Total Rain vs. Median Temperature", 
+       x = "Daily Total Rain (mm)", 
+       y = "Daily Median Temperature (°C)") 
+
+
+    
+
+ 
+  
+```
+
+Wind Direction January 5-11th
+
+```{r}
+
+wind <- data |>
+  filter( Month == "Jan") |>
+  filter( Day == 5:11) |>
+  group_by( Day )
+  
+
+ggplot(wind, aes(x = Day, y = WindDir)) + geom_point()
+
+```
 
 ```{r}
 
 
-
 ```
-
