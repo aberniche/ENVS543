@@ -1,0 +1,36 @@
+---
+title: "Factors"
+author: "Ashley"
+format: html
+editor: source
+---
+
+
+Change the order of the weekdays to start with Monday.
+Add two additional factor columns:
+Weekday/Weekend based on the day of the week.
+Create a column based on the *four primary lunar phases* for the data collected.
+[Superstar Question] Create a column that indicates whether the tide is coming in (
+Incoming) or going out (Outgoing).
+
+Upload a markdown document summarizing these changes in the Rice Rivers Center data 
+set using tables or graphs or some other manner that demonstrates you made the changes.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(forcats)
+source("getricedata.R")
+data <- getricedata()
+```
+
+
+```{r}
+Data <- data |>
+  mutate( Weekday = factor (Weekday, ordered = TRUE)) |>
+  mutate(Weekday = fct_relevel(Weekday, "Mon"))
+  
+Data |>
+  ggplot( aes (x = Weekday)) + geom_bar()
+```
+
