@@ -13,3 +13,5 @@ Edit here.
 
 ## Other Stuff
 -[Evil data homework](https://aberniche.github.io/ENVS543/Tabulardatahomework.html)
+
+-[SpacialPoints](https://aberniche.github.io/ENVS543/SpacialPointsAssignment.html)
