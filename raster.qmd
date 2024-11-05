@@ -1,0 +1,183 @@
+---
+title: "Raster"
+author: "Ashley Berniche"
+format: html
+editor: visual
+---
+
+#Raster Homework
+
+Load the raster and point data in and crop to an appropriate size to display the locations of the sampling plots and make a label for each site.
+
+```{r}
+library(tidyverse)
+library(raster)
+library(sf)
+
+url <- "https://github.com/DyerlabTeaching/Raster-Data/raw/main/data/alt_22.tif"
+raster <- raster(url)
+
+# Load and format beetle data
+beetle_url <- "https://raw.githubusercontent.com/dyerlab/ENVS-Lectures/master/data/Araptus_Disperal_Bias.csv"
+
+read_csv(beetle_url) %>%
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) -> beetles
+
+beetles %>% st_bbox()
+
+baja_extent <- extent( c(-116, -109, 22, 30 ) )
+baja_extent
+
+
+
+alt <- crop( raster, baja_extent )
+
+alt.df <- alt %>%
+  rasterToPoints() %>%
+  as.data.frame() %>% 
+  transmute(Longitude = x,
+            Latitude = y,
+            Elevation = alt_22)
+
+plot(alt)
+plot( beetles["Suitability"], pch=16, add=TRUE) +
+  text(st_coordinates(beetles)[,1], st_coordinates(beetles)[,2], labels = beetles$Site, pos = 4, cex = 0.7, col = "blue")
+```
+
+Use the click() function to crop the raster and filter the sites to include only the sampling locations that are in the Cape regions (e.g., south of site labeled #75).  
+
+```{r}
+library(raster)
+
+
+
+
+cropextent <- extent( c(-114, -109, 22, 25 ) )
+newmap <- crop( raster, cropextent )
+plot(newmap)
+
+beetles <- beetles %>%   
+  mutate(Longitude = st_coordinates(.)[, 1],         
+         Latitude = st_coordinates(.)[, 2]) 
+
+```
+
+Plot the raster of elevation and all cape region locales with sex-ratio represented as the size of the plot symbol.
+
+```{r}
+library(tidyverse)
+library(raster)
+library(sf)
+library(ggplot2)
+library(ggrepel)
+
+
+
+raster_url <- "https://github.com/DyerlabTeaching/Raster-Data/raw/main/data/alt_22.tif"
+cape_raster <- raster(raster_url)  # Load raster data
+
+
+cape_extent <- extent(c(-111.75, -109.5, 23.25, 24.5))
+cape_raster <- crop(cape_raster, cape_extent) 
+
+cape_raster.df <- cape_raster %>%
+  rasterToPoints() %>%
+  as.data.frame() %>%
+  transmute(Longitude = x,
+            Latitude = y,
+            Elevation = alt_22)  
+cape_elevation <- cape_raster.df %>%
+  ggplot() + 
+  geom_raster(aes(x = Longitude, y = Latitude, fill = Elevation)) + 
+  coord_equal() +
+  theme_minimal()
+
+
+site75_coords <- c(Longitude = -110.7460, Latitude = 24.58843)
+
+
+beetles <- beetles %>%
+  mutate(Longitude = st_coordinates(.)[, 1],
+         Latitude = st_coordinates(.)[, 2])
+
+
+cape_sites <- beetles %>%
+  filter(Latitude < site75_coords["Latitude"])
+
+
+cape_map <- cape_elevation + 
+  scale_fill_gradient2(low = "darkgreen", mid = "yellow", high = "brown", midpoint = 1000) +
+  geom_sf(data = cape_sites, aes(size = MFRatio), color = "dodgerblue2", alpha = 0.75) +
+  ggtitle("MF Ratio in Cape Region") +
+  labs(x = "Longitude", y = "Latitude") +
+  theme_minimal() +
+  geom_text_repel(data = cape_sites %>%
+                    mutate(Longitude = st_coordinates(.)[, 1],
+                           Latitude = st_coordinates(.)[, 2]),
+                  aes(x = Longitude, y = Latitude, label = Site),
+                  size = 4, color = "black") 
+
+  
+ 
+cape_map
+
+```
+
+The peninsula of Baja California is divided into the States of Baja California Norte and Baja California Sur. The border between these states is at 28° Latitude. Divide the sample locations into groups based on which state they are located in and plot the average sex ratio of the sample sites partitioned by each site.
+
+```{r}
+
+state_sex_ratios <- beetles %>%
+  mutate(State = if_else(Latitude >= 28, "Baja California Norte", "Baja California Sur")) %>%
+  group_by(State, Site) %>%
+  summarize(Avg_MFRatio = mean(MFRatio, na.rm = TRUE)) %>%
+  ungroup()
+
+sex_ratio_plot <- state_sex_ratios %>%
+  ggplot(aes(x = factor(Site), y = Avg_MFRatio, fill = State)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Site", y = "Average Male-Female Ratio (MFRatio)", 
+       title = "Average Sex Ratio by Site and State",
+       fill = "State") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Baja California Norte" = "skyblue", 
+                               "Baja California Sur" = "salmon"))
+
+sex_ratio_plot
+
+
+```
+
+
+
+Is there a relationship between the observed sex ratio and the elevation at that site?  Plot these, and in the text, perform a correlation test (cor.test()) and report the values as if you were writing them up in a results section.
+
+```{r}
+
+beetles2 <- beetles %>%
+  mutate(Longitude = st_coordinates(.)[, 1],
+         Latitude = st_coordinates(.)[, 2]) %>%
+  rowwise() %>%
+  mutate(Elevation = extract(cape_raster, matrix(c(Longitude, Latitude), ncol = 2))) %>%
+  ungroup()
+
+# Plot Sex Ratio vs. Elevation
+sex_ratio_elevation_plot <- ggplot(beetles2, aes(x = Elevation, y = MFRatio)) +
+  geom_point(color = "dodgerblue") +
+  geom_smooth(method = "lm", color = "darkorange", se = TRUE) +
+  labs(x = "Elevation (meters)", y = "Male-Female Ratio (MFRatio)", 
+       title = "Relationship Between Sex Ratio and Elevation") +
+  theme_minimal()
+
+# Display plot
+sex_ratio_elevation_plot
+
+# Perform correlation test
+correlation_result <- cor.test(beetles2$Elevation, beetles2$MFRatio, use = "complete.obs")
+
+# View correlation test results
+correlation_result
+
+```
+
+A Pearson's test was done to determine if there was a relationship between sex ratio and site elevation. The p value was determined to be 0.6508, which far exceeds the accepted significance level. There is insignificant evidence to support a relationship between sex ratio in beetles and site elevation. 

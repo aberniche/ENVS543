@@ -1,0 +1,162 @@
+---
+title: "Textual Analysis"
+author: "Ashley Berniche"
+format: html
+editor: visual
+---
+
+```{r}
+
+library(tidyverse)
+library(readr)
+library(stringr)
+
+url <- "https://raw.githubusercontent.com/DyerlabTeaching/Textual-Data/refs/heads/main/data/ENVSclasses.txt?token=GHSAT0AAAAAACWO27UIA46V72P7DBZEP5EKZYZFFXQ" 
+```
+
+```{r}
+x <- "Ashley"
+y <- "Berniche"
+
+x
+y
+cat(x)
+```
+
+```{r}
+paste("Hi", "my", "name", "is", "ashley")
+
+```
+
+```{r}
+length(x) #doesn't give the length of the variable
+
+nchar(x)
+
+str_length(x)
+```
+
+```{r}
+vec <- c(x, y)
+vec
+length(vec)
+str_length(vec)
+```
+
+```{r}
+a <- 1:10
+paste(a) #pasting elements in a vector 
+paste(a, collapse = ", ")
+
+b <- LETTERS[1:10]
+b
+B <- letters[1:10]
+B
+```
+
+```{r}
+
+str_detect(a,"1")
+str_detect(x,"Ashley")
+str_detect(x,"ashley")
+
+str_count(y, "e")
+```
+
+```{r}
+str_locate(y, "Berniche")
+str_locate(vec, "e")
+str_locate_all(vec, "e") #does something exist and where 
+
+```
+
+```{r}
+z <- "Hi my name is Ashley"
+paste(z)
+str_sub(z, 2, 5)
+
+
+```
+
+#Make a graphical display of the number of courses in ENVS by course level 100, 200, etc -Make a word cloud from the titles
+
+```{r}
+envs <- read_lines( url)
+head (envs, 25)
+```
+
+```{r}
+str_detect(envs, "ENVS") -> IDX
+
+envs[IDX]
+```
+
+```{r}
+envs101 <-envs[1]
+envs101
+```
+
+```{r}
+str_view( envs101, "ENVS")
+str_view(envs101, "Hour")
+str_view(envs101, "o")
+
+str_view(envs101, "[:digit:]") #matches the numbers in the text 
+str_view(envs101, "[:digit:]{3}")
+```
+
+```{r}
+str_view(envs101, "[:alpha:]") #can replace alpha with upper or lower, or space 
+
+str_view(envs101, "[:upper:]{4} [:digit:]{3}")
+
+str_view(envs101, "[A-Z]{4} [0-9]{3}") #Will not pick up a typo where there is a typo or a space missing 
+#add a ^ in front of [A and it will only search at the beginning of the line or $ to anchor at the end 
+```
+
+```{r}
+pattern <- "^[A-Z]{4} [0-9]{3}.+[0-9] Hour[s]?\\.$"
+
+grepl(pattern, envs ) -> idx
+titles <- envs[idx]
+titles
+
+
+```
+```{r}
+```
+
+
+```{r}
+str_split( titles, pattern="\\.", simplify = TRUE) -> raw
+```
+
+
+```{r}
+data.frame( course = raw[,1],
+                    title = str_trim(raw [,2]),
+                    hours = str_trim(raw [,3]), " Hours") |>
+  mutate( hours = str_remove( hours, " Hour") ) |>
+  mutate( hours = str_remove( hours, "s") ) |>
+  mutate( program = str_split( course, " ", simplify=T)[,1])  |>
+  mutate( number = str_split( course, " ", simplify=T)[,2]) ) 
+
+
+
+```
+
+```{r}
+data.frame(
+  course = raw[, 1],
+  title = str_trim(raw[, 2]),
+  hours = str_trim(raw[, 3])
+) |>
+  mutate(
+    hours = str_remove(hours, " Hour"),
+    hours = str_remove(hours, "s"),
+    program = str_split(course, " ", simplify = TRUE)[, 1],
+    number = str_split(course, " ", simplify = TRUE)[, 2]
+  )
+
+```
+
