@@ -18,11 +18,78 @@ library(readr)
 library(stringr)
 
 
-data <- read_tsv("C:\\Users\\abern\\OneDrive\\Documents\\ENVS543\\LifeSciencesCurriculum.txt")
+data <- read_lines("C:\\Users\\abern\\OneDrive\\Documents\\ENVS543\\LifeSciencesCurriculum.txt")
+
+class( data )
+
+course_data <- tibble(line = data) %>%
+  filter(str_detect(line, "^(ENVS|BNFO|LFSC)\\s+\\d{3}")) %>%
+  mutate(
+    program = str_extract(line, "^(ENVS|BNFO|LFSC)"),         
+    course_number = str_extract(line, "\\d{3}"),             
+    level = paste0(str_sub(course_number, 1, 1), "00")        
+  )
 
 
-str_detect(data, "ENVS") -> idx
+course_counts <- course_data %>%
+  group_by(program, level) %>%
+  summarise(course_count = n(), .groups = "drop")
+
+
+ggplot(course_counts, aes(x = level, y = course_count, fill = program)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Number of Courses by Level and Program",
+       x = "Course Level",
+       y = "Number of Courses") +
+  theme_minimal()
+
+
+
 
 ```
 
+2. A wordcloud based upon all course titles.  
+
+```{r}
+
+library(tidyverse)
+library(readr)
+library(stringr)
+library(wordcloud)
+library(tm)
+
+
+data <- read_lines("C:\\Users\\abern\\OneDrive\\Documents\\ENVS543\\LifeSciencesCurriculum.txt")  # Path to the file
+
+
+course_descriptions <- tibble(line = data) %>%
+  filter(!str_detect(line, "^(ENVS|BNFO|LFSC)\\s+\\d{3}")) %>%
+  summarise(text = paste(line, collapse = " "))
+
+
+corpus <- Corpus(VectorSource(course_descriptions$text))
+
+
+corpus_clean <- corpus %>%
+  tm_map(content_transformer(tolower)) %>%              
+  tm_map(removePunctuation) %>%                         
+  tm_map(removeNumbers) %>%                             
+  tm_map(removeWords, stopwords("en")) %>%              
+  tm_map(stripWhitespace)                               
+
+
+dtm <- TermDocumentMatrix(corpus_clean)
+matrix <- as.matrix(dtm)
+word_freqs <- sort(rowSums(matrix), decreasing = TRUE)   # Sum up word frequencies
+df <- data.frame(word = names(word_freqs), freq = word_freqs)
+
+
+set.seed(123)  # For reproducibility
+wordcloud(words = df$word, freq = df$freq, min.freq = 3,
+          max.words = 50, random.order = FALSE, rot.per = 0.35,
+          colors = brewer.pal(8, "Dark2"))
+
+
+
+```
 
