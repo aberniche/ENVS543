@@ -1,0 +1,28 @@
+---
+title: "TextHomework"
+author: "Ashley"
+format: html
+editor: visual
+---
+
+## Text Data Homework
+
+The data for this assignment is found in a text document here.  These data are a textual dump of all course descriptions from Bioinformatics (BNFO), Environmental Studies (ENVS), and Life Sciences (LFSC), in the same format as demonstrated in class.
+
+1. A plot of the number of courses at the 100, 200, 300, and 400-level grouped by program.  
+
+
+```{r}
+library(tidyverse)
+library(readr)
+library(stringr)
+
+
+data <- read_tsv("C:\\Users\\abern\\OneDrive\\Documents\\ENVS543\\LifeSciencesCurriculum.txt")
+
+
+str_detect(data, "ENVS") -> idx
+
+```
+
+

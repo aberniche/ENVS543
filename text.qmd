@@ -123,23 +123,22 @@ titles
 
 
 ```
+
 ```{r}
 ```
-
 
 ```{r}
 str_split( titles, pattern="\\.", simplify = TRUE) -> raw
 ```
 
-
 ```{r}
 data.frame( course = raw[,1],
                     title = str_trim(raw [,2]),
                     hours = str_trim(raw [,3]), " Hours") |>
-  mutate( hours = str_remove( hours, " Hour") ) |>
-  mutate( hours = str_remove( hours, "s") ) |>
+  mutate( hours = str_remove ( hours, " Hour") ) |>
+  mutate( hours = str_remove ( hours, "s") ) |>
   mutate( program = str_split( course, " ", simplify=T)[,1])  |>
-  mutate( number = str_split( course, " ", simplify=T)[,2]) ) 
+  mutate( number = str_split( course, " ", simplify=T)[,2]) 
 
 
 
@@ -160,3 +159,7 @@ data.frame(
 
 ```
 
+```{r}
+
+
+```
