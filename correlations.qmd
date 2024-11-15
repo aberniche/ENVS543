@@ -45,40 +45,35 @@ subset_data <- rice_data %>%
   head(40) %>%
   select(AirTempC, BP_HG)
 
-# Check for normality for AirTempC
-# Histogram
+
 ggplot(subset_data, aes(x = AirTempC)) +
   geom_histogram(bins = 10, fill = "skyblue", color = "black", alpha = 0.7) +
   ggtitle("Histogram of Air Temperature (C)") +
   theme_minimal()
 
-# Q-Q Plot for AirTempC (Using ggplot2's stat_qq and stat_qq_line)
+
 ggplot(subset_data, aes(sample = AirTempC)) +
   stat_qq() +
   stat_qq_line() +
   ggtitle("Q-Q Plot of Air Temperature (C)") +
   theme_minimal()
 
-# Shapiro-Wilk test for AirTempC
+
 shapiro_airtemp <- shapiro.test(subset_data$AirTempC)
 cat("Shapiro-Wilk test for AirTempC:\n")
 print(shapiro_airtemp)
 
-# Check for normality for BP_HG
-# Histogram
 ggplot(subset_data, aes(x = BP_HG)) +
   geom_histogram(bins = 10, fill = "skyblue", color = "black", alpha = 0.7) +
   ggtitle("Histogram of Barometric Pressure (Hg)") +
   theme_minimal()
 
-# Q-Q Plot for BP_HG (Using ggplot2's stat_qq and stat_qq_line)
 ggplot(subset_data, aes(sample = BP_HG)) +
   stat_qq() +
   stat_qq_line() +
   ggtitle("Q-Q Plot of Barometric Pressure (Hg)") +
   theme_minimal()
 
-# Shapiro-Wilk test for BP_HG
 shapiro_bphg <- shapiro.test(subset_data$BP_HG)
 cat("Shapiro-Wilk test for BP_HG:\n")
 print(shapiro_bphg)
@@ -101,18 +96,16 @@ The points are distributing in horizontal lines on the plot. This is because a l
 5. Using a permutation approach, define the distribution of correlation values between the variables in #3, assuming that the NULL hypothesis is true. Plot these as a histogram and include the observed correlation.  
 
 ```{r}
-set.seed(123)  # For reproducibility
-
-# Subset the first 40 observations of AirTempC and BP_HG
+set.seed(123) 
 subset_data <- rice_data %>% 
   select(AirTempC, BP_HG) %>% 
   slice(1:40) %>% 
   na.omit()
 
-# Compute the observed correlation
+
 observed_corr <- cor(subset_data$AirTempC, subset_data$BP_HG, method = "pearson")
 
-# Generate the null distribution
+
 n_permutations <- 1000
 null_correlations <- numeric(n_permutations)
 
@@ -121,10 +114,10 @@ for (i in 1:n_permutations) {
   null_correlations[i] <- cor(subset_data$AirTempC, permuted_BP_HG, method = "pearson")
 }
 
-# Plot the null distribution
+
 hist(null_correlations, breaks = 30, col = "lightblue", main = "Null Distribution of Correlations",
      xlab = "Correlation Values", ylab = "Frequency")
-abline(v = observed_corr, col = "red", lwd = 2, lty = 2)  # Add observed correlation
+abline(v = observed_corr, col = "red", lwd = 2, lty = 2) 
 text(observed_corr, max(table(cut(null_correlations, 30))) * 0.9, 
      labels = paste("Observed =", round(observed_corr, 2)), col = "red")
 
