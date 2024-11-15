@@ -1,5 +1,5 @@
 ---
-title: "Correlation"
+title: "Correlation Homework"
 author: "Ashley"
 format: html
 editor: source
@@ -8,7 +8,7 @@ editor: source
 
 ## Correlations for Rice Rivers Data
 
-inst
+1. Look up the library GGally; it has a function named ggpairs(). Use that function to plot the atmospheric data from the Rice Rivers Center for the samples collected from 10 February to 15 February.  
 
 ```{r}
 
@@ -89,3 +89,46 @@ W = 0.96246, p-value = 0.2031
 
 data:  subset_data$BP_HG
 W = 0.89733, p-value = 0.001601
+
+4. Given your findings in the last question, what kind of correlation statistic would be most appropriate for estimating the correlation between this subset of data?
+
+The air temperature appears to be normally distributed, so I would use the Pearson test. For barometric, I would use the Spearman test since the data is not normally distributed. 
+
+4. Look at a qqnorm() plot of the barometric pressure data you used in the previous example. Is there something that "looks" odd with these data? Explain why those data are the way they are.
+
+The points are distributing in horizontal lines on the plot. This is because a lot of the data is repeating in the dataset. 
+
+5. Using a permutation approach, define the distribution of correlation values between the variables in #3, assuming that the NULL hypothesis is true. Plot these as a histogram and include the observed correlation.  
+
+```{r}
+set.seed(123)  # For reproducibility
+
+# Subset the first 40 observations of AirTempC and BP_HG
+subset_data <- rice_data %>% 
+  select(AirTempC, BP_HG) %>% 
+  slice(1:40) %>% 
+  na.omit()
+
+# Compute the observed correlation
+observed_corr <- cor(subset_data$AirTempC, subset_data$BP_HG, method = "pearson")
+
+# Generate the null distribution
+n_permutations <- 1000
+null_correlations <- numeric(n_permutations)
+
+for (i in 1:n_permutations) {
+  permuted_BP_HG <- sample(subset_data$BP_HG)  # Permute BP_HG
+  null_correlations[i] <- cor(subset_data$AirTempC, permuted_BP_HG, method = "pearson")
+}
+
+# Plot the null distribution
+hist(null_correlations, breaks = 30, col = "lightblue", main = "Null Distribution of Correlations",
+     xlab = "Correlation Values", ylab = "Frequency")
+abline(v = observed_corr, col = "red", lwd = 2, lty = 2)  # Add observed correlation
+text(observed_corr, max(table(cut(null_correlations, 30))) * 0.9, 
+     labels = paste("Observed =", round(observed_corr, 2)), col = "red")
+
+```
+P-value: 0.001
+
+The null hypothesis is rejected, and the correlation can be considered signifigant. 
