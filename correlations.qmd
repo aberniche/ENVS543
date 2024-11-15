@@ -1,0 +1,91 @@
+---
+title: "Correlation"
+author: "Ashley"
+format: html
+editor: source
+
+---
+
+## Correlations for Rice Rivers Data
+
+inst
+
+```{r}
+
+library(GGally)
+library(dplyr)
+library(lubridate)
+library(ggplot2)
+
+
+source("getricedata.R")
+rice_data <- getricedata()
+
+filtered_data <- rice_data %>%
+  filter(Date >= ymd_hms("2014-02-10 00:00:00") & Date <= ymd_hms("2014-02-15 23:59:59"))
+
+
+atmospheric_data <- filtered_data %>%
+  select(AirTempC, RelHumidity, WindSpeed_mph, BP_HG) %>%
+  na.omit() %>%
+  mutate(across(everything(), as.numeric)) 
+
+
+ggpairs(atmospheric_data, title = "Atmospheric Data (Feb 10 - Feb 15, 2014)", progress = FALSE)
+```
+
+There's literally no way this is right. 
+
+2, BP_HG had the strongest correlation with a -0.712 correlation coefficient. 
+
+3. Using the first 40 observations in air temperature and barometric pressure from the Rice Center data set, determine if they are individually distributed as normal random variables. 
+
+```{r}
+subset_data <- rice_data %>%
+  head(40) %>%
+  select(AirTempC, BP_HG)
+
+# Check for normality for AirTempC
+# Histogram
+ggplot(subset_data, aes(x = AirTempC)) +
+  geom_histogram(bins = 10, fill = "skyblue", color = "black", alpha = 0.7) +
+  ggtitle("Histogram of Air Temperature (C)") +
+  theme_minimal()
+
+# Q-Q Plot for AirTempC (Using ggplot2's stat_qq and stat_qq_line)
+ggplot(subset_data, aes(sample = AirTempC)) +
+  stat_qq() +
+  stat_qq_line() +
+  ggtitle("Q-Q Plot of Air Temperature (C)") +
+  theme_minimal()
+
+# Shapiro-Wilk test for AirTempC
+shapiro_airtemp <- shapiro.test(subset_data$AirTempC)
+cat("Shapiro-Wilk test for AirTempC:\n")
+print(shapiro_airtemp)
+
+# Check for normality for BP_HG
+# Histogram
+ggplot(subset_data, aes(x = BP_HG)) +
+  geom_histogram(bins = 10, fill = "skyblue", color = "black", alpha = 0.7) +
+  ggtitle("Histogram of Barometric Pressure (Hg)") +
+  theme_minimal()
+
+# Q-Q Plot for BP_HG (Using ggplot2's stat_qq and stat_qq_line)
+ggplot(subset_data, aes(sample = BP_HG)) +
+  stat_qq() +
+  stat_qq_line() +
+  ggtitle("Q-Q Plot of Barometric Pressure (Hg)") +
+  theme_minimal()
+
+# Shapiro-Wilk test for BP_HG
+shapiro_bphg <- shapiro.test(subset_data$BP_HG)
+cat("Shapiro-Wilk test for BP_HG:\n")
+print(shapiro_bphg)
+```
+
+data:  subset_data$AirTempC
+W = 0.96246, p-value = 0.2031
+
+data:  subset_data$BP_HG
+W = 0.89733, p-value = 0.001601
