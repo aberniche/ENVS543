@@ -6,7 +6,6 @@ editor: source
 
 ---
 
-![](media/models.png)
 
 ```{r setup, include=FALSE}
 library( tidyverse )
@@ -63,3 +62,98 @@ summary( df )
 # Activity
 
 What features of this data set may impact the departure delay for flights coming out of JFK on *ExpressJet* Airlines?
+
+```{r}
+
+ggplot(df, aes(x = temp, y = `Departure Delay`)) +
+  geom_point(color = "blue", alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", color = "darkred", fill = "grey", linetype = "solid") +
+  labs(
+    title = "Impact of Temperature on Departure Delays",
+    x = "Temperature (°F)",
+    y = "Departure Delay (minutes)"
+  ) +
+  theme_minimal(base_size = 15) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold"),
+    axis.text = element_text(color = "black")
+  )
+
+
+
+```
+
+```{r}
+ggplot(df, aes(x = wind_speed, y = `Departure Delay`)) +
+  geom_point(alpha = 0.7, size = 2, color = "blue") +
+  geom_smooth(method = "lm", color = "black", linetype = "solid", size = 1.5) +
+  labs(
+    title = "Impact of Wind Gusts on Departure Delays",
+    x = "Wind Speed (mph)",
+    y = "Departure Delay (minutes)"
+  ) +
+  theme_classic(base_size = 15) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 12)
+  )
+
+
+```
+```{r}
+ggplot(df, aes(x = wind_gust, y = `Departure Delay`)) +
+  geom_point(alpha = 0.7, size = 2, color = "blue") +
+  geom_smooth(method = "lm", color = "black", linetype = "solid", size = 1.5) +
+  labs(
+    title = "Impact of Wind Gusts on Departure Delays",
+    x = "Wind Speed (mph)",
+    y = "Departure Delay (minutes)"
+  ) +
+  theme_classic(base_size = 15) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 12)
+  )
+
+```
+```{r}
+ggplot(df, aes(x = visib, y = `Departure Delay`)) +
+  geom_point(alpha = 0.7, size = 2, color = "lightblue") +
+  geom_smooth(method = "lm", color = "red", linetype = "solid", size = 1.5) +
+  labs(
+    title = "Impact of Visibility on Departure Delays",
+    x = "Visibility (miles)",
+    y = "Departure Delay (minutes)"
+  ) +
+  theme_classic(base_size = 15) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 12)
+  )
+```
+
+
+```{r}
+
+
+ggplot(df, aes(x = precip, y = `Departure Delay`)) +
+  geom_point(color = "dodgerblue", alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", color = "red", fill = "grey") +
+  labs(
+    title = "Impact of Precipitation on Departure Delays",
+    x = "Precipitation (inches)",
+    y = "Departure Delay (minutes)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+```
+```{r}
+model <- lm(`Departure Delay` ~ temp + wind_speed + wind_gust + visib  + precip, data = df)
+
+summary(model)
+```
+Based on the analysis of temperature, wind speed, wind gusts, visibility, and precipitation, visibility is the highest predictor for flight delays, with a p value of less than 0.001. The other factors are not shown as significant based on the data set provided. 
