@@ -142,20 +142,121 @@ window.Quarto = {
 </ul>
 <p>The data are located as a CSV file named <code>DietData.csv</code> linked from the Canvas page. Load the data in and format things so they look correctly to you.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load the data in here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"DietData.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 76 Columns: 7</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (7): Person, gender, Age, Height, pre.weight, Diet, weight6weeks
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
 </div>
 <section id="exploratory-data-anlsysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-anlsysis">Exploratory Data Anlsysis</h2>
 <p>One of the first things to do is to look at the data and see if there are any obvious things. Go ahead and explore these data visually. What do you see?</p>
+<p>There are 76 observations of 7 variables.All of the people are adults.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data visualization</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="estimating-mean-values" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-mean-values">Estimating Mean Values</h2>
-<p>Make a table of Weigth Loss by gender and diet.</p>
+<p>Make a table of Weight Loss by gender and diet.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Table output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>summary_table <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender, Diet) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean_Weight_Loss =</span> <span class="fu">mean</span>(weight6weeks, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD_Weight_Loss =</span> <span class="fu">sd</span>(weight6weeks, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'gender'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(summary_table, <span class="at">caption =</span> <span class="st">"Weight Loss by Gender and Diet"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Weight Loss by Gender and Diet</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">gender</th>
+<th style="text-align: right;">Diet</th>
+<th style="text-align: right;">Mean_Weight_Loss</th>
+<th style="text-align: right;">SD_Weight_Loss</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">64.87857</td>
+<td style="text-align: right;">6.877296</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">62.17857</td>
+<td style="text-align: right;">6.274635</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">62.65333</td>
+<td style="text-align: right;">5.370537</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">76.15000</td>
+<td style="text-align: right;">5.439414</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">73.16364</td>
+<td style="text-align: right;">3.818448</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">75.76667</td>
+<td style="text-align: right;">4.434848</td>
+<td style="text-align: right;">12</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </section>
 <section id="way-analysis-of-variance" class="level2">
@@ -167,37 +268,100 @@ y_{ij} = \mu + \tau_{Diet, i} + \epsilon_j
 \]</span></p>
 <p>Test the null hypothesis, <span class="math inline">\(H_O:\)</span> <em>There is no effect of diet on weight loss</em> (e.g., <span class="math inline">\(\tau_{Diet-1} = \tau_{Diet-2} = \tau_{Diet-3} = 0.0\)</span>). Is there evidence for one diet producing more weight loss than the others? Create an <code>aov</code> analysis and assign it to the variable <code>fit.diet</code> and examine its contents.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Diet <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>Diet)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>fit.diet <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight6weeks <span class="sc">~</span> Diet, <span class="at">data =</span> df)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.diet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+Diet         2     81   40.62   0.619  0.541
+Residuals   73   4790   65.61               </code></pre>
 </div>
-<p>Are they all significantly different? Try the <code>TukeyHSD()</code> Interpret the results.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Posthoc test</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>How much of the variation is explained? If you notice when you do a summary from a <code>lm()</code> (regression) model, it gives you the <span class="math inline">\(R^2\)</span> values directly (remember <span class="math inline">\(R^2 = \frac{SS_{model}}{SS_{Error}}\)</span>). Does <code>summary()</code> of your <code>aov</code> model give you that?</p>
+<p>Are they all significantly different? Try the <code>TukeyHSD()</code> Interpret the results. With a p value of 0.656, we fail to reject the null hypothesis, there is no statistical significance.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How much variance?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(fit.diet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = weight6weeks ~ Diet, data = df)
+
+$Diet
+         diff       lwr      upr     p adj
+2-1 -2.563000 -8.101060 2.975060 0.5127347
+3-1 -1.093519 -6.530187 4.343150 0.8803987
+3-2  1.469481 -3.909314 6.848277 0.7909184</code></pre>
+</div>
+</div>
+<p>How much of the variation is explained? If you notice when you do a summary from a <code>lm()</code> (regression) model, it gives you the <span class="math inline">\(R^2\)</span> values directly (remember <span class="math inline">\(R^2 = \frac{SS_{model}}{SS_{Error}}\)</span>). Does <code>summary()</code> of your <code>aov</code> model give you that? The R squared is 0.01668, meaning only 1.668% of the variation can be explained by diet. The summary of the aov does not give the R squared value.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(weight6weeks <span class="sc">~</span> Diet, <span class="at">data =</span> df)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.lm)<span class="sc">$</span>r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.01667723</code></pre>
+</div>
 </div>
 <p>Since I asked the question, the answer is probably no. Why does it not do this? Probably for historical reasons, which are a bit of a pain in the backside. That being said, there are some <code>tidy</code> ways to fix this issue. I’m going to use the <code>broom</code> package which allows us to clean up (or tidy if you will) the model objects. This will take the model object and pull out <em>all</em> the ANOVA table stuff and put it into a <code>tibble</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library( broom ) </span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># use your model fit next (I called mine fit.diet)</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># tidy_diet &lt;- tidy( fit.diet )</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tidy_diet</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'broom' was built under R version 4.4.2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>tidy_diet <span class="ot">&lt;-</span> <span class="fu">tidy</span>( fit.diet )</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>tidy_diet</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  term         df  sumsq meansq statistic p.value
+  &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 Diet          2   81.2   40.6     0.619   0.541
+2 Residuals    73 4790.    65.6    NA      NA    </code></pre>
+</div>
 </div>
 <p>Now, since it is all easily accessible, we can calculate the <span class="math inline">\(R^2\)</span> from the new model output.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the variance explained from the raw sums of squares</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># r2_Diet &lt;- tidy_diet$sumsq[1] / sum( tidy_diet$sumsq )</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># r2_Diet </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>r2_Diet <span class="ot">&lt;-</span> tidy_diet<span class="sc">$</span>sumsq[<span class="dv">1</span>] <span class="sc">/</span> <span class="fu">sum</span>( tidy_diet<span class="sc">$</span>sumsq )</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>r2_Diet </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.01667723</code></pre>
+</div>
 </div>
 <p><em>Gender:</em></p>
 <p>The underlying linear model.</p>
 <p><span class="math inline">\(y_{ij} = \mu + \tau_{gender, i} + \epsilon_j\)</span></p>
 <p>Independent of the diet, test the null hypothesis <span class="math inline">\(H_O:\)</span> <em>There is no difference in weight loss between genders</em> (e.g., $<em>{gender-0} = </em>{gender-2} = 0.0 $). Is there evidence for one gender being significantly different than another? How much of the variation is explained (another <span class="math inline">\(R^2\)</span> by gender)?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># partition effects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df<span class="sc">$</span>gender)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>fit.gender <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight6weeks <span class="sc">-</span> pre.weight <span class="sc">~</span> gender, <span class="at">data =</span> df)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+gender       1    0.3   0.278   0.044  0.835
+Residuals   74  470.7   6.360               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>aov_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit.gender)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>SS_model <span class="ot">&lt;-</span> aov_summary[[<span class="dv">1</span>]][<span class="st">"gender"</span>, <span class="st">"Sum Sq"</span>]</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>SS_residuals <span class="ot">&lt;-</span> aov_summary[[<span class="dv">1</span>]][<span class="st">"Residuals"</span>, <span class="st">"Sum Sq"</span>]</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>SS_total <span class="ot">&lt;-</span> SS_model <span class="sc">+</span> SS_residuals</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>R2_gender <span class="ot">&lt;-</span> SS_model <span class="sc">/</span> SS_total</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>R2_gender</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0005913517</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>tidy_gender <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit.gender)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>tidy_gender</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  term         df   sumsq meansq statistic p.value
+  &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 gender        1   0.278  0.278    0.0438   0.835
+2 Residuals    74 471.     6.36    NA       NA    </code></pre>
+</div>
 </div>
 <p>How do you interpret these results thus far?</p>
+<p>The p value is much greater than 0.05, so the we fail to reject the null hypothesis. Also, with an R squared of 0.00059, only 0.059% of weight loss can be explained by gender, giving it little to no impact on weight loss.</p>
 </section>
 <section id="do-genders-respond-differently-to-diets" class="level1">
 <h1>Do genders respond differently to diets?</h1>
@@ -210,23 +374,64 @@ y_{ij} = \mu + \tau_{Diet, i} + \epsilon_j
 </ul>
 <p>In <span class="math inline">\(R\)</span>, this is done as:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># diet model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fit.diet <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight6weeks <span class="sc">-</span> pre.weight <span class="sc">~</span> Diet, <span class="at">data =</span> df)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.diet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)   
+Diet         2   60.5  30.264   5.383 0.0066 **
+Residuals   73  410.4   5.622                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gender model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>fit.gender <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight6weeks <span class="sc">-</span> pre.weight <span class="sc">~</span> gender, <span class="at">data =</span> df)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+gender       1    0.3   0.278   0.044  0.835
+Residuals   74  470.7   6.360               </code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># interaction model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>fit.interaction <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight6weeks <span class="sc">-</span> pre.weight <span class="sc">~</span> Diet <span class="sc">*</span> gender, <span class="at">data =</span> df)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.interaction)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+Diet         2   60.5  30.264   5.629 0.00541 **
+gender       1    0.2   0.169   0.031 0.85991   
+Diet:gender  2   33.9  16.952   3.153 0.04884 * 
+Residuals   70  376.3   5.376                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>r2_Diet <span class="ot">&lt;-</span> tidy_diet<span class="sc">$</span>sumsq[<span class="dv">1</span>] <span class="sc">/</span> <span class="fu">sum</span>( tidy_diet<span class="sc">$</span>sumsq )</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>r2_Diet </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.01667723</code></pre>
+</div>
 </div>
 <p>What is the <span class="math inline">\(R^2\)</span> for this model?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># best model variance explained</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>aov_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit.interaction)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>SS_model <span class="ot">&lt;-</span> <span class="fu">sum</span>(aov_summary[[<span class="dv">1</span>]]<span class="sc">$</span><span class="st">`</span><span class="at">Sum Sq</span><span class="st">`</span>[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]) </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>SS_residuals <span class="ot">&lt;-</span> aov_summary[[<span class="dv">1</span>]]<span class="sc">$</span><span class="st">`</span><span class="at">Sum Sq</span><span class="st">`</span>[<span class="dv">4</span>] </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>SS_total <span class="ot">&lt;-</span> SS_model <span class="sc">+</span> SS_residuals</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>R2 <span class="ot">&lt;-</span> SS_model <span class="sc">/</span> SS_total</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>R2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2008791</code></pre>
+</div>
 </div>
 </section>
 <section id="which-model-is-best" class="level1">
 <h1>Which Model is Best?</h1>
 <p>How would you compare the models you generated? How do you interpret the findings?</p>
-<p><em>Explain, in words, your findings and interpretation of these findings</em></p>
+<p>The first models did not find a relationship between diet and gender and weight loss, but the second model found that diet has an effect on weight loss, and that the interaction between gender and diet is significant as well. With an R squared of 0.20, it appears the second model fits the data better. The interaction model is able to detect more of the nuiance of the data and identify relationships between the data that the simpler model misses.</p>
 </section>
 
 </main>
