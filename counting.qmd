@@ -5,7 +5,6 @@ format: html
 editor: source
 ---
 
-
 ```{r}
 
 
@@ -23,7 +22,7 @@ grad <- read_csv("grad_school.csv")
 ntu <- read_csv("ntu_data.csv")
 ```
 
-1. The FDA has suggested a change in a medication that has been shown to have detrimental side effects in half of the patients.  A clinical trial was conducted with nineteen patients; only three reported side effects.  Did the change make a significant difference?  
+1.  **The FDA has suggested a change in a medication that has been shown to have detrimental side effects in half of the patients. A clinical trial was conducted with nineteen patients; only three reported side effects. Did the change make a significant difference?**
 
 ```{r}
 
@@ -45,10 +44,10 @@ cat("P-value:", p_value, "\n")
 
 
 ```
-The change in medication made a significant difference in the number of students showing side effects. The p-value of the change is 0.00295, which is smaller than the accepted significance value of 0.05. 
 
+The change in medication made a significant difference in the number of students showing side effects. The p-value of the change is 0.00295, which is smaller than the accepted significance value of 0.05.
 
-2. Two different environmental remediation treatments are evaluated for the impacts on turbidity (measured using the Nephelometric Turbidity Unit or NTU).  For regulatory reasons, turbidity is binned into four groups based on NTU: 0-15 ntu, 16-22 ntu, 23-30 ntu, and 31+ ntu.  Do both treatments have the same impact on turbidity?  Explain.
+2.  **Two different environmental remediation treatments are evaluated for the impacts on turbidity (measured using the Nephelometric Turbidity Unit or NTU). For regulatory reasons, turbidity is binned into four groups based on NTU: 0-15 ntu, 16-22 ntu, 23-30 ntu, and 31+ ntu. Do both treatments have the same impact on turbidity? Explain.**
 
 ```{r}
 bins <- c(-Inf, 15, 22, 30, Inf)
@@ -66,9 +65,10 @@ cat("Chi-Square Test Statistic:", chi_test$statistic, "\n")
 cat("P-value:", chi_test$p.value, "\n")
 cat("Degrees of Freedom:", chi_test$parameter, "\n")
 ```
-Based on the results of the chi-squared analysis, the two treatment types do not have the same impact on turbidity. The p-value is much less than 0.05, indicating a difference in how the turbidity scores are distributed across the different categories. 
 
-3. A dozen graduate students tried to determine if there was a relationship between their undergraduate GPA and their scores on the Graduate Records Examination.  Look at these data and determine the extent to which they are related.  Explain.
+Based on the results of the chi-squared analysis, the two treatment types do not have the same impact on turbidity. The p-value is much less than 0.05, indicating a difference in how the turbidity scores are distributed across the different categories.
+
+3.  **A dozen graduate students tried to determine if there was a relationship between their undergraduate GPA and their scores on the Graduate Records Examination. Look at these data and determine the extent to which they are related. Explain.**
 
 ```{r}
 correlation <- cor(grad$GPA, grad$GRE)
@@ -94,6 +94,7 @@ ggplot(grad, aes(x = GPA, y = GRE)) +
   theme_minimal()
 
 ```
+
 ```{r}
 correlation_test <- cor.test(grad$GPA, grad$GRE, method = "pearson")
 
@@ -101,9 +102,10 @@ correlation_test <- cor.test(grad$GPA, grad$GRE, method = "pearson")
 cat("Pearson Correlation Coefficient:", correlation_test$estimate, "\n")
 cat("P-value:", correlation_test$p.value, "\n")
 ```
-As illustrated in the scatter plot, there is a positive correlation between undergraduate GPA and GRE scores. The p value was 0.18, and a Pearson Correlation Coefficient of 0.66 that determines the moderate positive correlation. Meaning, the higher the undergrad GPA, the more likely it is that the student will score higher on the GRE. This highlights the importance of studying hard and getting good grades. 
 
-4. You are looking at fruit yield on dogwood.  You designed an experiment with four different treatments and measured the total yield in germinated seeds.  Are there differences in yield?  Explain.
+As illustrated in the scatter plot, there is a positive correlation between undergraduate GPA and GRE scores. The p value was 0.18, and a Pearson Correlation Coefficient of 0.66 that determines the moderate positive correlation. Meaning, the higher the undergrad GPA, the more likely it is that the student will score higher on the GRE. This highlights the importance of studying hard and getting good grades.
+
+4.  **You are looking at fruit yield on dogwood. You designed an experiment with four different treatments and measured the total yield in germinated seeds. Are there differences in yield? Explain.**
 
 ```{r}
 kruskal_result <- kruskal.test(Seeds ~ Treatment, data = seeds)
@@ -121,8 +123,7 @@ ggplot(seeds, aes(x = Treatment, y = Seeds)) +
   theme_minimal()
 
 ```
-Based on the results, the p value indicates that there is a significant difference in seed yields based on the germination treatment used. Treatment C yielded the highest number of germinated seeds, while treatment D yielded the lowest. 
 
+Based on the results, the p value indicates that there is a significant difference in seed yields based on the germination treatment used. Treatment C yielded the highest number of germinated seeds, while treatment D yielded the lowest.
 
-
-p.s. Thanks for a great class! I had never used R before this semester. I definitely struggled with the most basic things at the start, but I feel like I have a much better feel for how the nuts and bolts of it all works. 
+p.s. Thanks for a great class! I had never used R before this semester. I definitely struggled with the most basic things at the start, but I feel like I have a much better feel for how the nuts and bolts of it all works.

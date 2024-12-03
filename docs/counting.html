@@ -182,7 +182,7 @@ dbl (1): NTU
 </div>
 </div>
 <ol type="1">
-<li>The FDA has suggested a change in a medication that has been shown to have detrimental side effects in half of the patients. A clinical trial was conducted with nineteen patients; only three reported side effects. Did the change make a significant difference?</li>
+<li><strong>The FDA has suggested a change in a medication that has been shown to have detrimental side effects in half of the patients. A clinical trial was conducted with nineteen patients; only three reported side effects. Did the change make a significant difference?</strong></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">19</span>          </span>
@@ -209,7 +209,7 @@ dbl (1): NTU
 </div>
 <p>The change in medication made a significant difference in the number of students showing side effects. The p-value of the change is 0.00295, which is smaller than the accepted significance value of 0.05.</p>
 <ol start="2" type="1">
-<li>Two different environmental remediation treatments are evaluated for the impacts on turbidity (measured using the Nephelometric Turbidity Unit or NTU). For regulatory reasons, turbidity is binned into four groups based on NTU: 0-15 ntu, 16-22 ntu, 23-30 ntu, and 31+ ntu. Do both treatments have the same impact on turbidity? Explain.</li>
+<li><strong>Two different environmental remediation treatments are evaluated for the impacts on turbidity (measured using the Nephelometric Turbidity Unit or NTU). For regulatory reasons, turbidity is binned into four groups based on NTU: 0-15 ntu, 16-22 ntu, 23-30 ntu, and 31+ ntu. Do both treatments have the same impact on turbidity? Explain.</strong></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>bins <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">15</span>, <span class="dv">22</span>, <span class="dv">30</span>, <span class="cn">Inf</span>)</span>
@@ -246,7 +246,7 @@ incorrect</code></pre>
 </div>
 <p>Based on the results of the chi-squared analysis, the two treatment types do not have the same impact on turbidity. The p-value is much less than 0.05, indicating a difference in how the turbidity scores are distributed across the different categories.</p>
 <ol start="3" type="1">
-<li>A dozen graduate students tried to determine if there was a relationship between their undergraduate GPA and their scores on the Graduate Records Examination. Look at these data and determine the extent to which they are related. Explain.</li>
+<li><strong>A dozen graduate students tried to determine if there was a relationship between their undergraduate GPA and their scores on the Graduate Records Examination. Look at these data and determine the extent to which they are related. Explain.</strong></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>correlation <span class="ot">&lt;-</span> <span class="fu">cor</span>(grad<span class="sc">$</span>GPA, grad<span class="sc">$</span>GRE)</span>
@@ -321,7 +321,7 @@ F-statistic: 7.974 on 1 and 10 DF,  p-value: 0.01804</code></pre>
 </div>
 <p>As illustrated in the scatter plot, there is a positive correlation between undergraduate GPA and GRE scores. The p value was 0.18, and a Pearson Correlation Coefficient of 0.66 that determines the moderate positive correlation. Meaning, the higher the undergrad GPA, the more likely it is that the student will score higher on the GRE. This highlights the importance of studying hard and getting good grades.</p>
 <ol start="4" type="1">
-<li>You are looking at fruit yield on dogwood. You designed an experiment with four different treatments and measured the total yield in germinated seeds. Are there differences in yield? Explain.</li>
+<li><strong>You are looking at fruit yield on dogwood. You designed an experiment with four different treatments and measured the total yield in germinated seeds. Are there differences in yield? Explain.</strong></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>kruskal_result <span class="ot">&lt;-</span> <span class="fu">kruskal.test</span>(Seeds <span class="sc">~</span> Treatment, <span class="at">data =</span> seeds)</span>
