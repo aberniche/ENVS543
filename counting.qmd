@@ -1,0 +1,137 @@
+---
+title: "NonParametric & Counting Statistics"
+author: "Ashley Berniche"
+format: html
+editor: source
+---
+
+
+```{r}
+
+
+library(readr)
+library(dplyr)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(ggplot2)
+
+
+
+seeds <- read_csv("DogwoodSeeds.csv")
+grad <- read_csv("grad_school.csv")
+ntu <- read_csv("ntu_data.csv")
+```
+
+1. The FDA has suggested a change in a medication that has been shown to have detrimental side effects in half of the patients.  A clinical trial was conducted with nineteen patients; only three reported side effects.  Did the change make a significant difference?  
+
+```{r}
+
+n <- 19          
+x <- 3          
+p_null <- 0.5   
+
+
+p_hat <- x / n
+
+se <- sqrt(p_null * (1 - p_null) / n)
+
+z <- (p_hat - p_null) / se
+
+p_value <- 2 * pnorm(abs(z), lower.tail = FALSE)
+
+cat("Z-test statistic:", z, "\n")
+cat("P-value:", p_value, "\n")
+
+
+```
+The change in medication made a significant difference in the number of students showing side effects. The p-value of the change is 0.00295, which is smaller than the accepted significance value of 0.05. 
+
+
+2. Two different environmental remediation treatments are evaluated for the impacts on turbidity (measured using the Nephelometric Turbidity Unit or NTU).  For regulatory reasons, turbidity is binned into four groups based on NTU: 0-15 ntu, 16-22 ntu, 23-30 ntu, and 31+ ntu.  Do both treatments have the same impact on turbidity?  Explain.
+
+```{r}
+bins <- c(-Inf, 15, 22, 30, Inf)
+labels <- c("0-15", "16-22", "23-30", "31+")
+
+ntu$NTU_Category <- cut(ntu$NTU, breaks = bins, labels = labels, right = TRUE)
+
+contingency_table <- table(ntu$Treatment, ntu$NTU_Category)
+
+chi_test <- chisq.test(contingency_table)
+
+fancy_table <- as.data.frame.matrix(contingency_table) %>%
+  rownames_to_column(var = "Treatment") %>%
+  kbl(caption = "Contingency Table: Turbidity Categories by Treatment") %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+print(fancy_table)
+cat("Chi-Square Test Statistic:", chi_test$statistic, "\n")
+cat("P-value:", chi_test$p.value, "\n")
+cat("Degrees of Freedom:", chi_test$parameter, "\n")
+
+print(contingency_table)
+cat("Chi-Square Test Statistic:", chi_test$statistic, "\n")
+cat("P-value:", chi_test$p.value, "\n")
+cat("Degrees of Freedom:", chi_test$parameter, "\n")
+```
+Based on the results of the chi-squared analysis, the two treatment types do not have the same impact on turbidity. The p-value is much less than 0.05, indicating a difference in how the turbidity scores are distributed across the different categories. 
+
+3. A dozen graduate students tried to determine if there was a relationship between their undergraduate GPA and their scores on the Graduate Records Examination.  Look at these data and determine the extent to which they are related.  Explain.
+
+```{r}
+correlation <- cor(grad$GPA, grad$GRE)
+
+
+model <- lm(GRE ~ GPA, data = grad)
+
+
+model_summary <- summary(model)
+
+# Display results
+cat("Pearson Correlation Coefficient:", correlation, "\n")
+cat("Regression Model Summary:\n")
+print(model_summary)
+
+# Create a scatter plot with regression line
+ggplot(grad, aes(x = GPA, y = GRE)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  labs(title = "Relationship Between GPA and GRE",
+       x = "Undergraduate GPA",
+       y = "GRE Score") +
+  theme_minimal()
+
+```
+```{r}
+correlation_test <- cor.test(grad$GPA, grad$GRE, method = "pearson")
+
+# Display results
+cat("Pearson Correlation Coefficient:", correlation_test$estimate, "\n")
+cat("P-value:", correlation_test$p.value, "\n")
+```
+As illustrated in the scatter plot, there is a positive correlation between undergraduate GPA and GRE scores. The p value was 0.18, and a Pearson Correlation Coefficient of 0.66 that determines the moderate positive correlation. Meaning, the higher the undergrad GPA, the more likely it is that the student will score higher on the GRE. This highlights the importance of studying hard and getting good grades. 
+
+4. You are looking at fruit yield on dogwood.  You designed an experiment with four different treatments and measured the total yield in germinated seeds.  Are there differences in yield?  Explain.
+
+```{r}
+kruskal_result <- kruskal.test(Seeds ~ Treatment, data = seeds)
+
+
+cat("Kruskal-Wallis Test p-value:", kruskal_result$p.value, "\n")
+
+
+ggplot(seeds, aes(x = Treatment, y = Seeds)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue") +
+  geom_smooth(method = "loess", se = TRUE, color = "red") +
+  labs(title = "Fruit Yield by Treatment with LOESS Regression",
+       x = "Treatment",
+       y = "Number of Germinated Seeds") +
+  theme_minimal()
+
+```
+Based on the results, the p value indicates that there is a significant difference in seed yields based on the germination treatment used. Treatment C yielded the highest number of germinated seeds, while treatment D yielded the lowest. 
+
+
+
+p.s. Thanks for a great class! I had never used R before this semester. I definitely struggled with the most basic things at the start, but I feel like I have a much better feel for how the nuts and bolts of it all works. 
