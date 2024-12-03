@@ -60,15 +60,6 @@ contingency_table <- table(ntu$Treatment, ntu$NTU_Category)
 
 chi_test <- chisq.test(contingency_table)
 
-fancy_table <- as.data.frame.matrix(contingency_table) %>%
-  rownames_to_column(var = "Treatment") %>%
-  kbl(caption = "Contingency Table: Turbidity Categories by Treatment") %>%
-  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
-
-print(fancy_table)
-cat("Chi-Square Test Statistic:", chi_test$statistic, "\n")
-cat("P-value:", chi_test$p.value, "\n")
-cat("Degrees of Freedom:", chi_test$parameter, "\n")
 
 print(contingency_table)
 cat("Chi-Square Test Statistic:", chi_test$statistic, "\n")
