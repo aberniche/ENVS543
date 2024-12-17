@@ -49,7 +49,7 @@ After exploring the relationship between sex ratio and habitat suitability, a ra
 
 Using the model developed for current conditions, suitability data from the last glacial maximum was used to estimate historical sex ratios, which were then compared to historic habitat suitability.
 
-##Results
+## Results
 
 The result of the ANOVA test returned a p-value of 0.00307, indicating that there is a difference in sex ratio among sampling locations. 
 
@@ -271,7 +271,7 @@ ggplot() +
 
 ```
 
-
+By adding phenotype to the suitability model, the model improved slightly in fit. The R squared was 0.02739, with 6.4% of variance in data being explained by the model. Phenotype A had a small positive effect, with a p value of 0.0407, and Phenotype B had a strong negative effect with a p value much less than 0.05. While there was improvement in the model, it was fairly small. 
 
 ```{r}
 #| echo: false
@@ -303,9 +303,7 @@ anova(model_1, model_2)
 
 ```
 
-The analysis compared two linear regression models to examine the relationship between the observed sex ratio (observed_ratio) and habitat suitability, with and without the inclusion of phenotypic variables (PhenotypeA and PhenotypeB). In the first model, which included only habitat suitability, the coefficient for suitability was statistically significant (p \< 2e-16), indicating a negative relationship with the observed sex ratio. The model explained 2.7% of the variance in the data, with an R-squared of 0.02739 and an Adjusted R-squared of 0.02708. The second model, which added PhenotypeA and PhenotypeB, showed a slight improvement in model fit, with an R-squared of 0.06388 and an Adjusted R-squared of 0.06297. This model revealed that both phenotypes also significantly influenced the observed sex ratio. PhenotypeA had a small positive effect (p = 0.0407), while PhenotypeB had a stronger negative effect (p \< 2e-16). The inclusion of phenotypic variables improved model performance, as reflected in a lower AIC for Model 2 (-7525.526 compared to -7411.002 for Model 1), and a significant improvement in the F-statistic (60.331, p \< 2.2e-16). Despite the improvement, the overall explanatory power of the model remains modest, with the combined predictors explaining approximately 6.4% of the variance in the observed sex ratio.
-
-Using the data from the last glacial maximum and the sampling locations, has the suitability changed at each location (e.g., was it as suitable 20,000 years ago as today)?
+Based on historic suitability data and current suitability, there have been changes across the different sites and their suitability. Based on the bar graph, some sites experiences a decrease in suitability, while others experienced a slight increase. The maps of the current suitability and the suitability during the glacial maximum show that suitability in the southern region has decreased.Overall, the presence of suitable habitat is decreasing. 
 
 ```{r}
 #| echo: false
@@ -362,42 +360,43 @@ print(map_lgm)
 
 ```
 
-Predict the distribution of the historical sex ratio by applying the model you developed for current conditions to the suitability estimated from the last glacial maximum. Across the landscape, do you detect any trends that may be due to the differences in climate, as measured by our estimates of habitat suitability?
+
+Based on the results of the model, as habitat suitability increases, the predicted sex ratio decreases. The negative relationship had a p value of 0.03332, making is significant. These results could have long term effects on the sex ratio of the beetle population as habitat suitability is likely to decrease with the persistance of climate change. 
 
 ```{r}
 #| echo: false
 
-# Load raster files for habitat suitability
-suitability_now <- raster("Suitability_now.tif")  # Current habitat suitability raster
-suitability_lgm <- raster("Suitability_lgm.asc")  # LGM habitat suitability raster
 
-# Load site locations data
-arapat_locations <- read.csv("Arapat_Locations.csv")  # Ensure it has Site, Latitude, Longitude columns
+suitability_now <- raster("Suitability_now.tif")  
+suitability_lgm <- raster("Suitability_lgm.asc")  
 
-# Convert locations to an sf object
+
+arapat_locations <- read.csv("Arapat_Locations.csv")   
+
+
 arapat_locations_sf <- st_as_sf(
   arapat_locations,
   coords = c("Longitude", "Latitude"),
   crs = 4326
 )
 
-# Transform CRS of locations to match the rasters
+
 arapat_locations_sf <- st_transform(arapat_locations_sf, crs = crs(suitability_now))
 
-# Convert sf object to SpatialPointsDataFrame for raster compatibility
+
 arapat_locations_sp <- as(arapat_locations_sf, "Spatial")
 
-# Extract habitat suitability values from the rasters
+
 arapat_locations <- arapat_locations %>%
   mutate(
     current_suitability = raster::extract(suitability_now, arapat_locations_sp),
     lgm_suitability = raster::extract(suitability_lgm, arapat_locations_sp)
   )
 
-# Load sample data
-arapat_samples <- read.csv("Arapat_Samples.csv")  # Ensure it has Site, Sex, etc.
 
-# Calculate observed sex ratios by site
+arapat_samples <- read.csv("Arapat_Samples.csv")  
+
+
 observed_sex_ratio <- arapat_samples %>%
   group_by(Site) %>%
   summarise(
@@ -406,18 +405,18 @@ observed_sex_ratio <- arapat_samples %>%
     observed_ratio = total_males / total_females
   )
 
-# Merge sex ratio data with habitat suitability data
+
 merged_data <- left_join(arapat_locations, observed_sex_ratio, by = "Site")
 
-# Linear regression: Observed sex ratio vs. current suitability
+
 model_current <- lm(observed_ratio ~ current_suitability, data = merged_data)
 summary(model_current)
 
-# Predict historical sex ratio using the model and LGM suitability
+
 merged_data <- merged_data %>%
   mutate(predicted_sex_ratio_lgm = predict(model_current, newdata = merged_data %>% mutate(current_suitability = lgm_suitability)))
 
-# Visualization: Predicted historical sex ratio by site
+
 ggplot(merged_data, aes(x = Site, y = predicted_sex_ratio_lgm)) +
   geom_bar(stat = "identity", fill = "darkblue") +
   labs(
@@ -427,7 +426,7 @@ ggplot(merged_data, aes(x = Site, y = predicted_sex_ratio_lgm)) +
   ) +
   theme_minimal()
 
-# Visualization: Predicted historical sex ratio vs. habitat suitability (LGM)
+
 ggplot(merged_data, aes(x = lgm_suitability, y = predicted_sex_ratio_lgm)) +
   geom_point(color = "steelblue") +
   geom_smooth(method = "lm", color = "red") +
@@ -439,12 +438,12 @@ ggplot(merged_data, aes(x = lgm_suitability, y = predicted_sex_ratio_lgm)) +
   theme_minimal()
 
 
-# Output the AIC for model comparison
+
 aic_current <- AIC(model_current)
 print(paste("AIC for current suitability model:", aic_current))
 
-
+#I know a lot of my code is redundant making it really messy but it is the only way I can stay focused and not get lost in the sauce 
 
 ```
 
-##Discussion
+

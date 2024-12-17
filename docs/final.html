@@ -86,7 +86,9 @@ ul.task-list li input[type="checkbox"] {
 <p>Phenotype was added to the regression to determine of the inclusion of type A or B would increase the relationship among habitat suitability and sex ratio. The regression was compared to just habitat suitability to determine if the model improved.</p>
 <p>After exploring the relationship between sex ratio and habitat suitability, a raster containing habitat suitability from the last glacial maximum was used to determine if the availability of suitable habitat was changing. A change in available habitat could be linked to climate change. Change in habitat was calculated and then displayed visually as a bar graph and spatially.</p>
 <p>Using the model developed for current conditions, suitability data from the last glacial maximum was used to estimate historical sex ratios, which were then compared to historic habitat suitability.</p>
-<p>##Results</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>The result of the ANOVA test returned a p-value of 0.00307, indicating that there is a difference in sex ratio among sampling locations.</p>
 <div class="cell">
 <div class="cell-output cell-output-stderr">
@@ -845,6 +847,7 @@ F-statistic: 0.8167 on 1 and 29 DF,  p-value: 0.3736</code></pre>
 </div>
 </div>
 </div>
+<p>By adding phenotype to the suitability model, the model improved slightly in fit. The R squared was 0.02739, with 6.4% of variance in data being explained by the model. Phenotype A had a small positive effect, with a p value of 0.0407, and Phenotype B had a strong negative effect with a p value much less than 0.05. While there was improvement in the model, it was fairly small.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -925,8 +928,7 @@ Model 2: observed_ratio ~ suitability + PhenotypeA + PhenotypeB
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-<p>The analysis compared two linear regression models to examine the relationship between the observed sex ratio (observed_ratio) and habitat suitability, with and without the inclusion of phenotypic variables (PhenotypeA and PhenotypeB). In the first model, which included only habitat suitability, the coefficient for suitability was statistically significant (p &lt; 2e-16), indicating a negative relationship with the observed sex ratio. The model explained 2.7% of the variance in the data, with an R-squared of 0.02739 and an Adjusted R-squared of 0.02708. The second model, which added PhenotypeA and PhenotypeB, showed a slight improvement in model fit, with an R-squared of 0.06388 and an Adjusted R-squared of 0.06297. This model revealed that both phenotypes also significantly influenced the observed sex ratio. PhenotypeA had a small positive effect (p = 0.0407), while PhenotypeB had a stronger negative effect (p &lt; 2e-16). The inclusion of phenotypic variables improved model performance, as reflected in a lower AIC for Model 2 (-7525.526 compared to -7411.002 for Model 1), and a significant improvement in the F-statistic (60.331, p &lt; 2.2e-16). Despite the improvement, the overall explanatory power of the model remains modest, with the combined predictors explaining approximately 6.4% of the variance in the observed sex ratio.</p>
-<p>Using the data from the last glacial maximum and the sampling locations, has the suitability changed at each location (e.g., was it as suitable 20,000 years ago as today)?</p>
+<p>Based on historic suitability data and current suitability, there have been changes across the different sites and their suitability. Based on the bar graph, some sites experiences a decrease in suitability, while others experienced a slight increase. The maps of the current suitability and the suitability during the glacial maximum show that suitability in the southern region has decreased.Overall, the presence of suitable habitat is decreasing.</p>
 <div class="cell">
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
@@ -954,7 +956,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </div>
-<p>Predict the distribution of the historical sex ratio by applying the model you developed for current conditions to the suitability estimated from the last glacial maximum. Across the landscape, do you detect any trends that may be due to the differences in climate, as measured by our estimates of habitat suitability?</p>
+<p>Based on the results of the model, as habitat suitability increases, the predicted sex ratio decreases. The negative relationship had a p value of 0.03332, making is significant. These results could have long term effects on the sex ratio of the beetle population as habitat suitability is likely to decrease with the persistance of climate change.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -998,7 +1000,6 @@ F-statistic: 5.011 on 1 and 28 DF,  p-value: 0.03332</code></pre>
 <pre><code>[1] "AIC for current suitability model: 23.2769735846254"</code></pre>
 </div>
 </div>
-<p>##Discussion</p>
 </section>
 
 </main>
