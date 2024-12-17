@@ -96,7 +96,7 @@ sex_ratio_table <- site_sex_ratios %>%
     mean_sex_ratio = round(mean_sex_ratio, 3),
     sd_sex_ratio = round(sd_sex_ratio, 3)
   ) %>%
-  # Create the table using knitr::kable
+ 
   knitr::kable(
     caption = "Summary of Sex Ratios by Site",
     col.names = c("Site", "Mean Sex Ratio", "SD of Sex Ratio", "Number of Plants"),
@@ -108,13 +108,13 @@ sex_ratio_table <- site_sex_ratios %>%
     full_width = FALSE
   )
 
-# Print the table
-print(sex_ratio_table)
+sex_ratio_table
+
 
 
 ```
 
-
+Of the 31 sites sampled, six sites had sex ratios that significantly differed from having equal distribution between male and female.In five of the six sites, males were the dominant sex sampled. 
 
 ```{r chunk3, echo=FALSE}
 
@@ -147,7 +147,7 @@ sex_ratio_test_table <- sex_ratio_tests %>%
     observed_ratio = round(observed_ratio, 3),
     p_value = round(p_value, 3)
   ) %>%
-  kbl(
+  knitr::kable(
     caption = "Binomial Test Results for Sex Ratios by Site",
     col.names = c("Site", "Total Males", "Total Females", "Total Beetles", "Observed Ratio", "P-Value", "Significant"),
     align = "c"
@@ -156,12 +156,15 @@ sex_ratio_test_table <- sex_ratio_tests %>%
     bootstrap_options = c("striped", "hover", "condensed", "responsive"),
     full_width = FALSE
   )
-print(sex_ratio_test_table)
+
+
+sex_ratio_test_table
+
 
 
 ```
 
-3.  Is there a functional relationship between the habitat suitability at the sampling locations and the sex ratio? Since all of our suitability measurements are taken from raster data with a cell size of 1.0 km2 (e.g., all plants are in the same grid cell), collapse the sex ratio estimates to a single value per site.
+Based on the results of the regression, only 2.74% of the variance in sex ratio could be explained by suitability. Additionally, the p-value was 0.3736, indicating that the relationship is not significant. Based on the results of this model, habitat suitability alone is not significant enough to explain sex ratios at the different sites. 
 
 ```{r chunk4, echo=FALSE}
 
@@ -226,14 +229,16 @@ site_data_table <- suitability_sex_ratio %>%
     full_width = FALSE
   )
 
-# Print the table to the output
+# To display the table in markdown output:
 site_data_table
+
 
 ```
 
-The analysis of the relationship between habitat suitability and sex ratio through linear regression models reveals differing results. In the first model, which examines the relationship between the observed sex ratio and habitat suitability, the coefficient for suitability is -0.05584, indicating a negative association between the two variables. However, this relationship is not statistically significant (p = 0.374), as the p-value exceeds the conventional threshold of 0.05, suggesting that habitat suitability does not significantly explain variation in the observed sex ratio. The model's R-squared value is 0.02739, indicating that only 2.7% of the variability in observed sex ratio is explained by habitat suitability. The negative adjusted R-squared value of -0.006148 further suggests that the model does not offer a meaningful improvement over using the mean observed sex ratio alone. The F-statistic for this model is 0.8167 (p = 0.3736), which also supports the conclusion that the model, as a whole, does not provide a significant fit.
 
-In contrast, the second model, which examines the relationship between site-specific sex ratio and habitat suitability, produces a statistically significant result. The coefficient for suitability in this model is -0.12023, indicating a stronger negative relationship between suitability and sex ratio compared to the first model. This relationship is statistically significant (p = 0.0472), suggesting that changes in habitat suitability are associated with changes in the site-specific sex ratio. The model explains 13.34% of the variability in sex ratio, as indicated by the R-squared value of 0.1334, which is a moderate improvement over the first model. The adjusted R-squared value of 0.1025 also supports the relevance of the model in explaining variability in sex ratio. The F-statistic for this model is 4.311 (p = 0.04717), indicating that the model is statistically significant and provides a reasonable fit to the data. Despite these results, the relatively low R-squared values in both models suggest that habitat suitability alone may not fully explain variation in sex ratio, and other factors may need to be considered in future analyses.
+
+
+
 
 ```{r chunk5, echo=FALSE}
 
@@ -266,7 +271,7 @@ ggplot() +
 
 ```
 
-Does the inclusion of Phenotype A and Phenotype B improve the functional relationship over habitat suitability alone?
+
 
 ```{r}
 #| echo: false
